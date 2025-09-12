@@ -1,0 +1,11 @@
+langchain
+langchain_community
+PyPDF2
+arxiv
+requests
+chromadb
+python-dotenv
+torch
+sentence-transformers
+langchain-huggingface
+transformers
