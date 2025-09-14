@@ -5,9 +5,7 @@ from arxiv_client import ArxivClient
 from dotenv import load_dotenv
 
 def main():
-    """
-    Main function to run the Document Q&A AI Agent.
-    """
+    
     load_dotenv()
     api_key = os.getenv("HUGGINGFACEHUB_API_TOKEN")
     if not api_key:
