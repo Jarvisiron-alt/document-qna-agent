@@ -3,9 +3,7 @@ import PyPDF2
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 def extract_text_from_pdf(pdf_path):
-    """
-    Extracts text from a single PDF file.
-    """
+ 
     text = ""
     try:
         with open(pdf_path, 'rb') as f:
@@ -17,10 +15,6 @@ def extract_text_from_pdf(pdf_path):
     return text
 
 def process_documents(directory):
-    """
-    Processes all PDF documents in a given directory.
-    Extracts text and splits it into manageable chunks.
-    """
     processed_docs = []
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=600, chunk_overlap=100)
 
