@@ -29,14 +29,11 @@ def process_documents(directory):
             pdf_path = os.path.join(directory, filename)
             print(f"Processing {filename}...")
             
-            # Extract text
             raw_text = extract_text_from_pdf(pdf_path)
             
             if raw_text:
-                # Split text into chunks
                 chunks = text_splitter.split_text(raw_text)
                 
-                # Store chunks with metadata
                 for i, chunk in enumerate(chunks):
                     processed_docs.append({
                         "source": filename,

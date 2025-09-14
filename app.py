@@ -9,14 +9,13 @@ def main():
     Main function to run the Document Q&A AI Agent.
     """
     load_dotenv()
-    # Check for API key
     api_key = os.getenv("HUGGINGFACEHUB_API_TOKEN")
     if not api_key:
         print("Error: HUGGINGFACEHUB_API_TOKEN environment variable not set.")
         print("Please set it to your Hugging Face API token.")
         return
 
-    # Directory containing PDF documents
+
     doc_directory = "documents"
     if not os.path.exists(doc_directory):
         os.makedirs(doc_directory)
@@ -24,7 +23,7 @@ def main():
         print("Please add your PDF documents to this directory.")
         return
 
-    # 1. Document Ingestion
+    
     print("Starting document ingestion...")
     processed_docs = process_documents(doc_directory)
     if not processed_docs:
@@ -32,11 +31,9 @@ def main():
         return
     print(f"Successfully processed {len(processed_docs)} documents.")
 
-    # 2. Initialize Q&A System
     qa_system = QASystem(processed_docs, api_key)
     arxiv_client = ArxivClient()
 
-    # 3. User Interaction Loop
     print("\nDocument Q&A AI Agent")
     print("Ask questions about the documents or use 'arxiv:' to search for a paper.")
     print("Type 'exit' to quit.")

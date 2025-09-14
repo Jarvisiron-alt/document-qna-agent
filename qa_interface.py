@@ -16,7 +16,6 @@ class QASystem:
             model="sentence-transformers/all-MiniLM-L6-v2"
         )
         
-        # Use HF Inference Endpoint client (modern, supported)
         self.llm = HuggingFaceEndpoint(
             model="google/flan-t5-large",
             huggingfacehub_api_token=api_key,
@@ -24,10 +23,8 @@ class QASystem:
             temperature=0.1,
             max_new_tokens=768,
         )
-        # Local transformers pipeline (no remote provider issues)
         local_model = os.getenv("LOCAL_T2T_MODEL", "google/flan-t5-base")
         tokenizer = AutoTokenizer.from_pretrained(local_model)
-        # Cap tokenizer length and prefer truncating older context
         try:
             tokenizer.model_max_length = min(getattr(tokenizer, "model_max_length", 1024) or 1024, 1024)
         except Exception:
@@ -63,10 +60,8 @@ class QASystem:
     def _create_qa_chain(self):
         if not self.vector_store:
             return None
-        # Reduce k so each prompt stays within the model's context window
         retriever = self.vector_store.as_retriever(search_kwargs={"k": 2})
 
-        # Custom prompt to improve factual, concise answers from context
         prompt = PromptTemplate(
             input_variables=["context", "question"],
             template=(
@@ -79,7 +74,6 @@ class QASystem:
             ),
         )
 
-        # Use map_reduce so each chunk is processed separately (fits within 512 token limit)
         question_prompt = PromptTemplate(
             input_variables=["context", "question"],
             template=(

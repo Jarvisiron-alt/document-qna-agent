@@ -1,52 +1,77 @@
-# Document Q&A AI Agent
+# Document Q&A — Ask Your PDFs Questions
 
-This project implements a Document Q&A AI Agent that can ingest multiple PDF documents, extract their content, and answer user queries based on the documents. It also includes a feature to search for papers on Arxiv.
+This app lets you drop in one or more PDF files and ask natural-language questions about them. It reads your documents, builds a quick index, and answers based only on what’s inside. It can also search arXiv when you ask it to.
 
-## Features
+## What it can do
+- Read multiple PDFs and extract their text
+- Answer questions grounded in your documents
+- Summarize sections or entire papers
+- Pull out metrics like accuracy or F1 if they’re in the text
+- Search arXiv when you prefix your query with `arxiv:`
 
-- **PDF Document Ingestion**: Handles multiple PDF documents, extracting text and structure.
-- **NLP-Powered Q&A**: Allows users to ask questions about the ingested documents.
-- **Summarization**: Can summarize key insights from the documents.
-- **Specific Information Extraction**: Can extract specific results like evaluation metrics.
-- **Arxiv Integration**: Can search for papers on Arxiv using a user's description.
-
-## Setup Instructions
-
-Prerequisites:
-- Python 3.10+
-- Git
+## Quick start (Windows / PowerShell)
+Prereqs: Python 3.10+, Git (recommended)
 
 1) Create and activate a virtual environment
-- PowerShell (Windows):
-    ```powershell
-    py -3.10 -m venv .venv
-    .\.venv\Scripts\Activate.ps1
-    ```
-    If activation is blocked, temporarily allow scripts:
-    ```powershell
-    Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-    .\.venv\Scripts\Activate.ps1
-    ```
-- macOS/Linux:
-    ```bash
-    python3 -m venv .venv
-    source .venv/bin/activate
-    ```
+```powershell
+cd "c:\Users\YASHU\VS project\document-qna-agent"
+py -3.10 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+```
+If activation is blocked, temporarily allow scripts in this session:
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\.venv\Scripts\Activate.ps1
+```
 
 2) Install dependencies
-```bash
+```powershell
 pip install -r requirements.txt
 ```
 
-3) Optional: Hugging Face token (only if using remote endpoints)
-- By default, the app uses a local Transformers model (`google/flan-t5-base`) and will download weights on first run.
-- If you prefer using Hugging Face Inference Endpoints, create a `.env` file with:
-    ```
-    HUGGINGFACEHUB_API_TOKEN=your_hugging_face_api_token
-    ```
+3) Add your PDFs
+Put your files in the `documents` folder. A sample PDF may already be there.
 
-4) Add your documents
-Place PDFs into the `documents/` folder (a sample file may already be included).
+4) Run the app
+```powershell
+python app.py
+```
+On the first run, the local language model (`google/flan-t5-base`) will download automatically. That might take a minute.
+
+## How to ask questions
+Type questions right into the prompt, for example:
+- "What problem does this paper address?"
+- "Summarize the methodology in 3 bullets."
+- "What accuracy and F1-score are reported?"
+- "arxiv: retrieval-augmented generation evaluation"
+
+To exit, type `exit`.
+
+## Optional: Hugging Face token (remote endpoints)
+By default, everything runs locally using Transformers. If you want to try a Hugging Face Inference Endpoint instead, create a `.env` file and add your token:
+```
+HUGGINGFACEHUB_API_TOKEN=your_hugging_face_api_token
+```
+
+You can also switch the local model by setting an environment variable before launching:
+```powershell
+$env:LOCAL_T2T_MODEL = "google/flan-t5-small"  
+python app.py
+```
+
+## Troubleshooting
+- "Activation of venv is blocked": run the `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass` command above and try again.
+- "pip not recognized": ensure Python is on PATH; try `py -3.10 -m pip install -r requirements.txt`.
+- First answer is slow: model weights and embeddings are being prepared; subsequent runs are faster.
+- Running out of memory: try a lighter model, e.g., set `LOCAL_T2T_MODEL` to `google/flan-t5-small`.
+
+## Project layout
+- `app.py` — CLI entry point; loads docs and runs the Q&A loop
+- `document_parser.py` — parses PDFs and chunks text for retrieval
+- `qa_interface.py` — embeddings, vector store, and the local LLM pipeline
+- `arxiv_client.py` — simple arXiv search helper (use with `arxiv:` queries)
+- `requirements.txt` — Python package list
+- `documents/` — put your PDFs here
 
 ## Usage
 
