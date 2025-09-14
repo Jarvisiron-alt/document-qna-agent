@@ -6,9 +6,6 @@ class ArxivClient:
         self.client = arxiv.Client()
 
     def search_papers(self, query, max_results=3):
-        """
-        Searches for papers on Arxiv.
-        """
         try:
             search = arxiv.Search(
                 query=query,
